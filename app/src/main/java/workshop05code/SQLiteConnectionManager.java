@@ -126,7 +126,7 @@ public class SQLiteConnectionManager {
      * @param word the word to store
      */
     public void addValidWord(int id, String word) {
-
+        if (word.matches("[a-z]{4}")) {
         String sql = "INSERT INTO validWords(id,word) VALUES(?, ?)";
 
         try (Connection conn = DriverManager.getConnection(databaseURL);
@@ -137,6 +137,9 @@ public class SQLiteConnectionManager {
     } catch (SQLException e) {
         System.out.println(e.getMessage());
     }
+    } else {
+        System.out.println("Ignored invalid word: " + word + " (must be a 4-letter word with lowercase letters only).");
+    }
 }
 
     /**
@@ -145,25 +148,25 @@ public class SQLiteConnectionManager {
      * @param guess the string to check if it is a valid word.
      * @return true if guess exists in the database, false otherwise
      */
-        public boolean isValidWord(String guess) {
-            String sql = "SELECT count(id) as total FROM validWords WHERE word LIKE ?";
-
-            try (Connection conn = DriverManager.getConnection(databaseURL);
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+    public boolean isValidWord(String guess) {
+        String sql = "SELECT count(id) as total FROM validWords WHERE word LIKE ?";
+    
+        try (Connection conn = DriverManager.getConnection(databaseURL);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+    
             stmt.setString(1, guess);
-
+    
             try (ResultSet resultRows = stmt.executeQuery()) {
                 if (resultRows.next()) {
                     int result = resultRows.getInt("total");
-                    return (result >= 1);
+                    return (result >= 1); 
                 }
             }
     
-            return false;
+            return false; 
     
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.getMessage()); 
             return false;
         }
     }

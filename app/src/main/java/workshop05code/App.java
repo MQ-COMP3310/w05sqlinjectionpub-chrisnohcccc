@@ -70,24 +70,30 @@ public class App {
         // let's get them to enter a word
 
         try (Scanner scanner = new Scanner(System.in)) {
-            System.out.print("Enter a 4 letter word for a guess or q to quit: ");
-            String guess = scanner.nextLine();
-
-            while (!guess.equals("q")) {
-                System.out.println("You've guessed '" + guess+"'.");
-
-                if (wordleDatabaseConnection.isValidWord(guess)) { 
-                    System.out.println("Success! It is in the the list.\n");
-                }else{
-                    System.out.println("Sorry. This word is NOT in the the list.\n");
-                }
-
-                System.out.print("Enter a 4 letter word for a guess or q to quit: " );
+            String guess;
+            do {
+                System.out.print("Enter a 4 letter word for a guess or q to quit: ");
                 guess = scanner.nextLine();
-            }
+    
+                // Check if the guess is "q" to exit
+                if (guess.equals("q")) break;
+    
+                // Validate the input (4 letters, lowercase a-z)
+                if (guess.matches("[a-z]{4}")) {
+                    System.out.println("You've guessed '" + guess + "'.");
+    
+                    if (wordleDatabaseConnection.isValidWord(guess)) {
+                        System.out.println("Success! It is in the list.\n");
+                    } else {
+                        System.out.println("Sorry. This word is NOT in the list.\n");
+                    }
+                } else {
+                    System.out.println("Invalid input, enter 4 digit word\n");
+                }
+    
+            } while (!guess.equals("q"));
         } catch (NoSuchElementException | IllegalStateException e) {
             e.printStackTrace();
         }
-
     }
 }
